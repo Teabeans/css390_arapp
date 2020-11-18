@@ -2,6 +2,7 @@ package com.example.css390_arapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -31,6 +32,14 @@ class MainActivity : AppCompatActivity() {
         // For now, just make a toast that says 'Click!'
         val toaster = Toast.makeText( applicationContext, "Click!", 2 )
         toaster.show()
+
+        val username = findViewById<EditText>(R.id.editTextTextPersonName)
+        val message = username.text.toString()
+        val intent = Intent(this, lobby::class.java).apply {
+            putExtra(EXTRA_MESSAGE, message)
+        }
+        startActivity(intent)
+
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {

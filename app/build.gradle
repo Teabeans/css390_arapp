@@ -34,15 +34,13 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation 'com.google.firebase:firebase-analytics-ktx' //Firebase SDK Google Analytics [Analytics off for now but can enable]
     implementation 'com.google.firebase:firebase-auth-ktx' //Firebase Authentication
-<<<<<<< HEAD
+
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'//Firebase Realtime Database
-=======
-    implementation 'com.google.firebase:firebase-database-ktx' //Firebase Realtime Database
     implementation 'com.google.android.gms:play-services-location:17.1.0'
->>>>>>> 3d02629b47a2b8f4d73d0c5225d1d502dfd1cf0d
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
