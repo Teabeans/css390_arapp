@@ -26,8 +26,9 @@ class MainActivity : AppCompatActivity() {
         val login = findViewById<Button>(R.id.button3)
     }
 
+    // Do something in response to button
     fun sendMessage(view: View) {
-        // Do something in response to button
+        // For now, just make a toast that says 'Click!'
         val toaster = Toast.makeText( applicationContext, "Click!", 2 )
         toaster.show()
     }
