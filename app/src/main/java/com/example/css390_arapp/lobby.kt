@@ -7,10 +7,14 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
 class lobby : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lobby)
@@ -29,7 +33,6 @@ class lobby : AppCompatActivity() {
         val database = FirebaseDatabase.getInstance()      // Bind the database into the application
         val myRef = database.getReference("message") // Create a Key
         myRef.setValue("Hello, World!")                    // Set a Value
-
     }
 
     // Send a key:value pair to the database
@@ -40,22 +43,35 @@ class lobby : AppCompatActivity() {
         val sendValField = findViewById<EditText>(R.id.db_send_value)
         val sendVal = sendValField.text.toString()
 
-        // Pop a toast to confirm keypress and Key:Value capture
-        val toaster = Toast.makeText(applicationContext, "DB_SEND - $sendKey : $sendVal", 2)
-        toaster.show()
-
         val database = FirebaseDatabase.getInstance()      // Bind the database into the application
-        val dbKey = database.getReference( sendKey ) // Create a Key
-        dbKey.setValue( sendVal )
+        val dbKey = database.getReference(sendKey) // Create a Key
+        dbKey.setValue(sendVal)
     }
 
     // Request information from the database
+
     fun db_recv(view: View) {
+
         val recvKeyField = findViewById<EditText>(R.id.db_recv_key)
         val recvKey = recvKeyField.text.toString()
 
-        // Pop a toast to confirm keypress and Key capture
-        val toaster = Toast.makeText(applicationContext, "DB_RECV - $recvKey", 2)
-        toaster.show()
+        val database = FirebaseDatabase.getInstance()      // Bind the database into the application
+        val dbKey = database.getReference(recvKey) // Create a Key
+
+        var pulledValue: Any? = null
+        val menuListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                pulledValue = dataSnapshot.value
+                // Pop a toast to confirm keypress and Key:Value capture
+                val toaster = Toast.makeText(applicationContext, "DB_RECV - $recvKey : $pulledValue", 2)
+                toaster.show()
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // handle error
+            }
+        }
+        dbKey.addListenerForSingleValueEvent(menuListener)
+
+
     }
 }
