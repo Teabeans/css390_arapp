@@ -1,6 +1,5 @@
 package com.example.css390_arapp
 
-import android.content.Intent
 import android.os.Bundle
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.view.View
@@ -8,6 +7,8 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
+
 
 class lobby : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +22,15 @@ class lobby : AppCompatActivity() {
         val textView = findViewById<TextView>(R.id.statusReport).apply {
             text = message
         }
+
+        // Write a message to the database
+
+        // Write a message to the database
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.getReference("message")
+
+        myRef.setValue("Hello, World!")
+
     }
 
     // Send a key:value pair to the database
@@ -32,7 +42,7 @@ class lobby : AppCompatActivity() {
         val sendVal = sendValField.text.toString()
 
         // Pop a toast to confirm keypress and Key:Value capture
-        val toaster = Toast.makeText( applicationContext, "DB_SEND - $sendKey : $sendVal", 2 )
+        val toaster = Toast.makeText(applicationContext, "DB_SEND - $sendKey : $sendVal", 2)
         toaster.show()
     }
 
@@ -42,7 +52,7 @@ class lobby : AppCompatActivity() {
         val recvKey = recvKeyField.text.toString()
 
         // Pop a toast to confirm keypress and Key capture
-        val toaster = Toast.makeText( applicationContext, "DB_RECV - $recvKey", 2 )
+        val toaster = Toast.makeText(applicationContext, "DB_RECV - $recvKey", 2)
         toaster.show()
     }
 }
