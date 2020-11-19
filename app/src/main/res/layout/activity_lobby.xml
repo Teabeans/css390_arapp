@@ -6,14 +6,94 @@
     android:layout_height="match_parent"
     tools:context=".lobby">
 
+    <EditText
+        android:id="@+id/db_send_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="DB SEND KEY"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="@+id/db_send"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/db_send" />
+
+    <EditText
+        android:id="@+id/db_send_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="DB SEND VALUE"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/db_send_key"
+        app:layout_constraintStart_toStartOf="@+id/db_send_key"
+        app:layout_constraintTop_toBottomOf="@+id/db_send_key" />
+
+    <Button
+        android:id="@+id/db_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SEND"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.88"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.110000014" />
+
+    <EditText
+        android:id="@+id/db_recv_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:ems="10"
+        android:hint="DB RECV KEY"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="@+id/db_send_key"
+        app:layout_constraintTop_toBottomOf="@+id/db_send_value" />
+
     <TextView
         android:id="@+id/statusReport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
+        android:textAlignment="center"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.782" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="ARGUMENT FROM PRIOR INTENT"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/statusReport"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/db_recv_value"
+        android:layout_width="210dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="DB RESPONSE"
+        android:textAlignment="textStart"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/db_send_key"
+        app:layout_constraintTop_toBottomOf="@+id/db_recv_key" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        app:layout_constraintStart_toStartOf="@+id/db_send"
+        app:layout_constraintTop_toTopOf="@+id/db_recv_key" />
 </androidx.constraintlayout.widget.ConstraintLayout>
