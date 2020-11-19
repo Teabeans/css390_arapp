@@ -9,6 +9,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.css390_arapp.ui.login.LoggedInUserView
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +27,27 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val login = findViewById<Button>(R.id.button3)
+
+        //Register Button with Firebase
+        registerLogin_button.setOnClickListener {
+            val email = emailLogin.text.toString()
+            val password = passwordLogin.text.toString()
+
+            if (email.isEmpty() || password.isEmpty()){
+                Toast.makeText( this, "Please enter an email and password to register.!", 2 ).show()
+                return@setOnClickListener
+            }
+            //Firebase Auth
+            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener{
+                    if(it.isSuccessful) {
+                        Toast.makeText( this, "Success!", 2 ).show()
+
+                    } else {
+                        Toast.makeText( this, "Failure!", 2 ).show()
+                    }
+                }
+        }
     }
 
     // Do something in response to button

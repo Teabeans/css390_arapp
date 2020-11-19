@@ -19,4 +19,6 @@
     <string name="timeTextDisplay">TimeView</string>
     <string name="timeDisplayText">TextView</string>
     <string name="timedisplaytext">timeDisplayText</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
 </resources>
