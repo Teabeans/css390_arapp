@@ -15,4 +15,8 @@
     <string name="login_failed">"Login failed"</string>
     <string name="locationTextV">Location</string>
     <string name="getlocationTextV">GetLocation</string>
+    <string name="TimeView">TextView</string>
+    <string name="timeTextDisplay">TimeView</string>
+    <string name="timeDisplayText">TextView</string>
+    <string name="timedisplaytext">timeDisplayText</string>
 </resources>
