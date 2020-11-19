@@ -20,7 +20,7 @@ class LocationCapture : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.display_location)
 
-        locationText = findViewById(R.id.locationTextView)
+        locationText = findViewById(R.id.locationTextDisplay)
         getLocationButton = findViewById(R.id.getLocationButton)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -30,17 +30,19 @@ class LocationCapture : AppCompatActivity() {
                 fusedLocationClient.lastLocation.addOnSuccessListener { location: Location ->
                     if(location != null){
                         try{
-                            var altAndLong = location.altitude.toString() + " " + location.longitude
+                            var altAndLong = "Altitude: " + location.altitude.toString() + ", Longitude:" + location.longitude
                             locationText.text = altAndLong
                         } catch (err : IOException){
                             err.printStackTrace()
                         }
+                    }else{
+                        locationText.text = "No location found"
                     }
                 }
             }
             else{
                 // permission not granted
-                // TODO
+                locationText.text = "Permission not granted"
             }
         }
     }
