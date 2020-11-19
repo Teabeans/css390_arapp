@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/locationTextDisplay"
         android:layout_width="265dp"
-        android:layout_height="23dp"
+        android:layout_height="40dp"
         android:text="@string/locationTextV"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,6 +35,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/locationTextDisplay"
-        app:layout_constraintVertical_bias="0.028" />
+        app:layout_constraintVertical_bias="0.134" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
