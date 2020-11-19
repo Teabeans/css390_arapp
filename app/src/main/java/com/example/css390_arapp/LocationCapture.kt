@@ -33,9 +33,9 @@ class LocationCapture : AppCompatActivity() {
                 fusedLocationClient.lastLocation.addOnSuccessListener { location: Location ->
                     if(location != null){
                         try{
-                            var altAndLong = "Altitude: " + location.altitude.toString() + ", Longitude:" + location.longitude
+                            var altAndLong = "Altitude: ${location.altitude}  Longitude: ${location.longitude}"
                             locationText.text = altAndLong
-                            timeText.text = "This location was update on: "+getDate(location.time)
+                            timeText.text = "This location was update on: " + getDate(location.time)
                         } catch (err : IOException){
                             err.printStackTrace()
                         }
