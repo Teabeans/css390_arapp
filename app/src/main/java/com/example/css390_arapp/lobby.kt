@@ -26,10 +26,9 @@ class lobby : AppCompatActivity() {
         // Write a message to the database
 
         // Write a message to the database
-        val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference("message")
-
-        myRef.setValue("Hello, World!")
+        val database = FirebaseDatabase.getInstance()      // Bind the database into the application
+        val myRef = database.getReference("message") // Create a Key
+        myRef.setValue("Hello, World!")                    // Set a Value
 
     }
 
@@ -44,6 +43,10 @@ class lobby : AppCompatActivity() {
         // Pop a toast to confirm keypress and Key:Value capture
         val toaster = Toast.makeText(applicationContext, "DB_SEND - $sendKey : $sendVal", 2)
         toaster.show()
+
+        val database = FirebaseDatabase.getInstance()      // Bind the database into the application
+        val dbKey = database.getReference( sendKey ) // Create a Key
+        dbKey.setValue( sendVal )
     }
 
     // Request information from the database
