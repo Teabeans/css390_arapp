@@ -29,24 +29,14 @@ class MainActivity : AppCompatActivity() {
         val login = findViewById<Button>(R.id.button3)
 
         //Register Button with Firebase
-        registerLogin_button.setOnClickListener {
-            val email = emailLogin.text.toString()
-            val password = passwordLogin.text.toString()
-
-            if (email.isEmpty() || password.isEmpty()){
-                Toast.makeText( this, "Please enter an email and password to register.!", 2 ).show()
-                return@setOnClickListener
-            }
-            //Firebase Auth
-            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener{
-                    if(it.isSuccessful) {
-                        Toast.makeText( this, "Success!", 2 ).show()
-
-                    } else {
-                        Toast.makeText( this, "Failure!", 2 ).show()
-                    }
-                }
+        register_button.setOnClickListener {
+            performRegister()
+        }
+        //Already have account redirect to Login
+        alreadyHaveAccount_textview.setOnClickListener{
+            //launch Login Activity
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -77,6 +67,33 @@ class MainActivity : AppCompatActivity() {
 
         val i = Intent(this@MainActivity, lobby::class.java)
         startActivity( i )
+    }
+
+    //Function for User Registration
+    private fun performRegister() {
+        val email = emailRegister_textview.text.toString()
+        val password = passwordRegister_textview.text.toString()
+
+        if (email.isEmpty() || password.isEmpty()){
+            Toast.makeText( this, "Please enter an email and password to register!", 2 ).show()
+            return
+        }
+        //Firebase Email/Password Registration
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener{
+                if(it.isSuccessful) {
+                    //Register succeeded, show confirmation toast
+                    Toast.makeText(this, "Register Success!", 2).show()
+
+                    //Launch Lobby Activity
+                    val intent = Intent(this, lobby::class.java)
+                    startActivity(intent)
+                }
+            }
+            .addOnFailureListener{
+                //Register Failed, show error toast
+                Toast.makeText( this, "Register Failed: ${it.message}", 10 ).show()
+            }
     }
 
 }
