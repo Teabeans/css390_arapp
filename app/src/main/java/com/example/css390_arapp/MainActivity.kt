@@ -2,7 +2,6 @@ package com.example.css390_arapp
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.AlarmClock.EXTRA_MESSAGE
@@ -12,10 +11,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.css390_arapp.ui.login.LoggedInUserView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -29,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         // Step 1: Create variables to hold all information related to this activity
         // In format: 'val {VariableName} = findViewById<{ViewType}>(R.id.{ViewID})
-        val username = findViewById<EditText>(R.id.editTextTextPersonName)
+        val username = findViewById<EditText>(R.id.nameRegister_textview)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -82,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         val toaster = Toast.makeText( applicationContext, "Click!", 2 )
         toaster.show()
 
-        val username = findViewById<EditText>(R.id.editTextTextPersonName)
+        val username = findViewById<EditText>(R.id.nameRegister_textview)
         val message = username.text.toString()
         val intent = Intent(this, lobby::class.java).apply {
             putExtra(EXTRA_MESSAGE, message)
@@ -91,6 +88,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /*
     private fun updateUiWithUser(model: LoggedInUserView) {
         val welcome = getString(R.string.welcome)
         val displayName = model.displayName
@@ -104,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         val i = Intent(this@MainActivity, lobby::class.java)
         startActivity( i )
     }
+    */
 
     //Function for User Registration
     private fun performRegister() {
@@ -125,7 +124,10 @@ class MainActivity : AppCompatActivity() {
                     uploadImageToFirebase()
 
                     //Launch Lobby Activity
-                    val intent = Intent(this, lobby::class.java)
+                    val message = nameRegister_textview.text.toString()
+                    val intent = Intent(this, lobby::class.java).apply {
+                        putExtra(EXTRA_MESSAGE, message)
+                    }
                     startActivity(intent)
                 }
             }
@@ -161,9 +163,9 @@ class MainActivity : AppCompatActivity() {
     private fun saveUserToFirebase(profileImageUrl: String) {
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
-
-        val user = User(uid, editTextTextPersonName.text.toString(), profileImageUrl, "alt long lat")
-
+        //Create user object to variable 'user'
+        val user = User(uid, nameRegister_textview.text.toString(), profileImageUrl, "alt long lat")
+        //Update user object in database
         ref.setValue(user)
             .addOnSuccessListener {
                 //do stuff if complete [log to console etc]
@@ -171,5 +173,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
 //User object for Firebase updating
 class User(val uid: String, val username: String, val profileImageUrl: String, val location: String)

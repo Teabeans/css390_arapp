@@ -3,15 +3,16 @@ package com.example.css390_arapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_login2.*
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login2)
+        setContentView(R.layout.activity_login)
 
         //Login Button with Firebase
         loginLogin_button.setOnClickListener {
@@ -36,7 +37,9 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this, "Login Success!", 2).show()
 
                     //Launch Lobby Activity
-                    val intent = Intent(this, lobby::class.java)
+                    val intent = Intent(this, lobby::class.java).apply {
+                        putExtra(AlarmClock.EXTRA_MESSAGE, email)
+                    }
                     startActivity(intent)
                 }
             }
