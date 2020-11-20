@@ -28,8 +28,6 @@ class lobby : AppCompatActivity() {
         }
 
         // Write a message to the database
-
-        // Write a message to the database
         val database = FirebaseDatabase.getInstance()      // Bind the database into the application
         val myRef = database.getReference("message") // Create a Key
         myRef.setValue("Hello, World!")                    // Set a Value
@@ -49,14 +47,13 @@ class lobby : AppCompatActivity() {
     }
 
     // Request information from the database
-
     fun db_recv(view: View) {
 
         val recvKeyField = findViewById<EditText>(R.id.db_recv_key)
         val recvKey = recvKeyField.text.toString()
 
-        val database = FirebaseDatabase.getInstance()      // Bind the database into the application
-        val dbKey = database.getReference(recvKey) // Create a Key
+        val database = FirebaseDatabase.getInstance() // Bind the database into the application
+        val dbKey = database.getReference(recvKey)    // Create a Key
 
         var pulledValue: Any? = null
         val menuListener = object : ValueEventListener {
@@ -65,13 +62,16 @@ class lobby : AppCompatActivity() {
                 // Pop a toast to confirm keypress and Key:Value capture
                 val toaster = Toast.makeText(applicationContext, "DB_RECV - $recvKey : $pulledValue", 2)
                 toaster.show()
+
+                // Change the field to the pulledValue
+                val textView = findViewById<TextView>(R.id.db_recv_value).apply {
+                    text = "Test $pulledValue"
+                }
             }
             override fun onCancelled(databaseError: DatabaseError) {
                 // handle error
             }
         }
         dbKey.addListenerForSingleValueEvent(menuListener)
-
-
     }
 }
