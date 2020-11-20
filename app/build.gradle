@@ -37,6 +37,9 @@ dependencies {
     //Firebase SDK Google Analytics [Analytics off for now but can enable]
     implementation 'com.google.firebase:firebase-auth-ktx' //Firebase Authentication
     implementation 'com.google.firebase:firebase-database-ktx'
+    implementation 'com.google.firebase:firebase-storage-ktx'
+
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.annotation:annotation:1.1.0'

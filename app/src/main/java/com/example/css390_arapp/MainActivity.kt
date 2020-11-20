@@ -1,8 +1,12 @@
 package com.example.css390_arapp
 
+import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.provider.AlarmClock.EXTRA_MESSAGE
+import android.provider.MediaStore
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -10,7 +14,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.css390_arapp.ui.login.LoggedInUserView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,11 +40,39 @@ class MainActivity : AppCompatActivity() {
         register_button.setOnClickListener {
             performRegister()
         }
-        //Already have account redirect to Login
+
+        //Already have account button, redirect to Login Activity
         alreadyHaveAccount_textview.setOnClickListener{
             //launch Login Activity
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+        }
+
+        //Select Photo Button
+        selectPhotoRegister_button.setOnClickListener{
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, 0)
+        }
+    }
+
+    //variable to hold user image for multiple functions [select, upload to Firebase]
+    var selectedPhotoUri: Uri? = null
+
+    //Photo is selected button
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null){
+            //Proceed, check what image was selected by user
+            //where image is stored
+            selectedPhotoUri = data.data
+            //create bitmap
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
+            //put bitmap into photo button
+            selectPhotoRegister_imageview.setImageBitmap(bitmap) //show photo in circle
+            selectPhotoRegister_button.alpha = 0f //hide select photo button
+
         }
     }
 
@@ -85,6 +121,9 @@ class MainActivity : AppCompatActivity() {
                     //Register succeeded, show confirmation toast
                     Toast.makeText(this, "Register Success!", 2).show()
 
+                    //Upload image to Firebase
+                    uploadImageToFirebase()
+
                     //Launch Lobby Activity
                     val intent = Intent(this, lobby::class.java)
                     startActivity(intent)
@@ -96,4 +135,41 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    //Function for User Image uploading to Firebase storage
+    private fun uploadImageToFirebase() {
+        //Safety check
+        if (selectedPhotoUri == null){
+            return
+        }
+
+        //random filename for now
+        val filename = UUID.randomUUID().toString()
+        val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
+
+        ref.putFile(selectedPhotoUri!!)
+            .addOnSuccessListener {
+                ref.downloadUrl.addOnSuccessListener {
+                    saveUserToFirebase(it.toString())
+                }
+            }
+            .addOnFailureListener{
+                //do stuff if fails [log to console etc]
+            }
+    }
+
+    //Function to add user information and user image to database
+    private fun saveUserToFirebase(profileImageUrl: String) {
+        val uid = FirebaseAuth.getInstance().uid ?: ""
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+
+        val user = User(uid, editTextTextPersonName.text.toString(), profileImageUrl, "alt long lat")
+
+        ref.setValue(user)
+            .addOnSuccessListener {
+                //do stuff if complete [log to console etc]
+            }
+    }
+
 }
+//User object for Firebase updating
+class User(val uid: String, val username: String, val profileImageUrl: String, val location: String)
