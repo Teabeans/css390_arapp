@@ -6,11 +6,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -122,13 +124,6 @@ class MainActivity : AppCompatActivity() {
 
                     //Upload image to Firebase
                     uploadImageToFirebase()
-
-                    //Launch Lobby Activity
-                    val message = nameRegister_textview.text.toString()
-                    val intent = Intent(this, lobby::class.java).apply {
-                        putExtra(EXTRA_MESSAGE, message)
-                    }
-                    startActivity(intent)
                 }
             }
             .addOnFailureListener{
@@ -168,7 +163,15 @@ class MainActivity : AppCompatActivity() {
         //Update user object in database
         ref.setValue(user)
             .addOnSuccessListener {
-                //do stuff if complete [log to console etc]
+                Log.d("Save User to Firebase:", "Success!")
+
+                //Launch Lobby Activity
+                val intent = Intent(this, lobby::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK) //clear activities
+                startActivity(intent)
+            }
+            .addOnFailureListener {
+                Log.d("Save User to Firebase:", "Failure: ${it.message}")
             }
     }
 
