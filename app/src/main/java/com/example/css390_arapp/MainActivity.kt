@@ -53,6 +53,12 @@ class MainActivity : AppCompatActivity() {
             intent.type = "image/*"
             startActivityForResult(intent, 0)
         }
+
+        //Location testing
+        testLocationButton.setOnClickListener{
+            val intent = Intent(this, LocationCapture::class.java)
+            startActivity(intent)
+        }
     }
 
     //variable to hold user image for multiple functions [select, upload to Firebase]
