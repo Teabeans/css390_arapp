@@ -4,12 +4,16 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.display_location.*
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -25,6 +29,10 @@ class LocationCapture : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getLocationButton.setOnClickListener {
             getLocation()
+        }
+
+        usernameQueryButton.setOnClickListener{
+            queryLocation(usernameQueryText.editableText.toString())
         }
     }
 
@@ -60,14 +68,14 @@ class LocationCapture : AppCompatActivity() {
     }
 
     //Send location to database with time and tempUsername
-    private  fun sendLocation(loc : String, time : String){
+    private fun sendLocation(loc : String, time : String){
         if(tempUserNameText.length() <= 0){
             Toast.makeText(this, "Enter a username!", 1).show()
             return
         }
 
         val username = tempUserNameText.editableText.toString()
-        var user = TempLocationUser(username, loc, time)
+        var user = TempLocationUser(username, loc, time) //Create a TempLocationUser object
         val reference = FirebaseDatabase.getInstance().getReference("users")
 
         reference.child(username).setValue(user).addOnSuccessListener {
@@ -77,6 +85,29 @@ class LocationCapture : AppCompatActivity() {
             Log.d("Location to database", "Failure!")
             Toast.makeText(this, "Unable to send location!", 1).show()
         }
+    }
+
+    //Find location of specified username in database
+    private fun queryLocation(username: String){
+        if(username.isEmpty()){
+            Toast.makeText( this, "text is empty", 1).show()
+            return
+        }
+        //Grab username from database
+        val reference = FirebaseDatabase.getInstance().getReference("users/$username")
+        //Display location and timeOfUpdate
+        reference.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot){
+                var location = p0.child("location").getValue()
+                var timeUpdated = p0.child("timeUpdated").getValue()
+                locationDatabaseText.text = location.toString()
+                timeOfUpdateText.text = timeUpdated.toString()
+            }
+            override fun onCancelled(p0: DatabaseError) {
+                //error handling
+            }
+        })
+
     }
 
     private fun getDate(millis : Long) : String{
