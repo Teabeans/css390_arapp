@@ -1,6 +1,8 @@
 package com.example.css390_arapp
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.renderscript.Sampler
@@ -12,18 +14,31 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.activity_lobby.*
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.display_location.*
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class lobby : AppCompatActivity() {
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lobby)
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Get the Intent that started this activity and extract the string
         val message = intent.getStringExtra(EXTRA_MESSAGE)
@@ -41,7 +56,12 @@ class lobby : AppCompatActivity() {
         //If user is not logged in, return to Register/Main screen
         verifyUserIsLoggedIn()
 
+        //Location testing
+        testLocationLobbyButton.setOnClickListener{
+            getLocation()
+        }
     }
+
 
     // Send a key:value pair to the database
     fun db_send(view: View) {
@@ -135,5 +155,50 @@ class lobby : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.nav_menu, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    //function to get location and send to DB [update currently logged in user]
+    private fun getLocation(){
+        Log.d("Location","Button Clicked!")
+        //Check if permission is granted
+        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            Log.d("Location","Perm Granted!")
+            // permission granted, start getting current device location
+            // Location is either turned off in the device setting or the the device never recorded any location from the Google Map
+            if(fusedLocationClient.lastLocation == null){
+                Log.d("Location","DID NOT FOUND LAST LOCATION")
+                Toast.makeText( this, "DID NOT FOUND LAST LOCATION", 1).show()
+                return
+            }
+            // Found last location, get time, altitude, longitude, and latitude of current device and send to DB
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location ->
+                try{
+                    var altAndLong = "alt:${location.altitude}, long:${location.longitude}, lat:${location.latitude}"
+                    var timeOfUpdate = getDate(location.time)
+                    //Update DB
+                    val uid = FirebaseAuth.getInstance().uid ?: ""
+                    val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+                    ref.child("location").setValue(altAndLong)
+                    ref.child("timeUpdated").setValue(timeOfUpdate)
+                    Log.d("Location","Location Updated in DB")
+                    Toast.makeText( this, "Location Found and Updated in DB!!", 2).show()
+                } catch (err : IOException){
+                    Log.d("Location","Location NOT found!!")
+                    Toast.makeText( this, "Location NOT found!!", 2).show()
+                    err.printStackTrace()
+                }
+            }
+        }
+        else{
+            // permission not granted
+            Toast.makeText( this, "Permission not granted!", 5).show()
+        }
+    }
+
+    //Function to get date, to update location with last time updated
+    private fun getDate(millis : Long) : String{
+        var dateFormat = "MM/dd/yyyy hh:mm:ss"
+        var formatter = SimpleDateFormat(dateFormat)
+        return formatter.format(Date(millis))
     }
 }

@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
         //Create user object to variable 'user'
-        val user = User(uid, nameRegister_textview.text.toString(), profileImageUrl, "alt long lat")
+        val user = User(uid, nameRegister_textview.text.toString(), profileImageUrl, "alt long lat", "time")
         //Update user object in database
         ref.setValue(user)
             .addOnSuccessListener {
@@ -184,4 +184,4 @@ class MainActivity : AppCompatActivity() {
 }
 
 //User object for Firebase updating
-class User(val uid: String, val username: String, val profileImageUrl: String, val location: String)
+class User(val uid: String, val username: String, val profileImageUrl: String, val location: String, val timeUpdated: String)
