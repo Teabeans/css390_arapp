@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.activity_lobby.*
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.display_location.*
+import org.w3c.dom.Text
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -85,7 +86,8 @@ class lobby : AppCompatActivity() {
         val toaster = Toast.makeText( applicationContext, "Click!", 2 )
         toaster.show()
 
-        val message = "This is a test of the AR transition" // TODO: Replace with coordinate data
+        val location = findViewById<TextView>(R.id.ar_location)
+        val message = location.text.toString()
         val intent = Intent(this, ar_render::class.java).apply {
             putExtra(EXTRA_MESSAGE, message)
         }
