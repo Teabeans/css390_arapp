@@ -96,6 +96,20 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    // Do something in response to button
+    fun bypassLogin(view: View) {
+        // For now, just make a toast that says 'Click!'
+        val toaster = Toast.makeText( applicationContext, "Bypassing...", 2 )
+        toaster.show()
+
+        val message = "DEV_USER"
+        val intent = Intent(this, lobby::class.java).apply {
+            putExtra(EXTRA_MESSAGE, message)
+        }
+        startActivity(intent)
+
+    }
+
     /*
     private fun updateUiWithUser(model: LoggedInUserView) {
         val welcome = getString(R.string.welcome)

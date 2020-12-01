@@ -10,16 +10,14 @@
         android:id="@+id/nameRegister_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:ems="10"
         android:hint="@string/username"
         android:inputType="textPersonName"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/selectPhotoRegister_button"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="@+id/selectPhotoRegister_button"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.352" />
+        app:layout_constraintBottom_toTopOf="@+id/emailRegister_textview"
+        app:layout_constraintEnd_toEndOf="@+id/emailRegister_textview"
+        app:layout_constraintStart_toStartOf="@+id/emailRegister_textview" />
 
     <Button
         android:id="@+id/button3"
@@ -29,19 +27,18 @@
         android:text="@string/login"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameRegister_textview"
-        app:layout_constraintVertical_bias="0.876" />
+        app:layout_constraintTop_toBottomOf="@+id/register_button"
+        app:layout_constraintVertical_bias="0.3" />
 
     <Button
         android:id="@+id/register_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:text="register"
-        app:layout_constraintBottom_toTopOf="@+id/alreadyHaveAccount_textview"
-        app:layout_constraintEnd_toEndOf="@+id/passwordRegister_textview"
-        app:layout_constraintStart_toStartOf="@+id/passwordRegister_textview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordRegister_textview" />
 
     <Button
@@ -51,24 +48,20 @@
         android:background="@drawable/rounded_select_photo_button"
         android:text="@string/select_photo"
         android:textSize="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/emailRegister_textview"
+        app:layout_constraintBottom_toBottomOf="@+id/selectPhotoRegister_imageview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.466" />
+        app:layout_constraintTop_toTopOf="@+id/selectPhotoRegister_imageview" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/selectPhotoRegister_imageview"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginBottom="30dp"
         app:civ_border_width="4dp"
-        app:layout_constraintBottom_toBottomOf="@+id/selectPhotoRegister_button"
-        app:layout_constraintEnd_toEndOf="@+id/selectPhotoRegister_button"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/selectPhotoRegister_button"
-        app:layout_constraintTop_toTopOf="@+id/selectPhotoRegister_button"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintBottom_toTopOf="@+id/nameRegister_textview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/passwordRegister_textview"
@@ -79,37 +72,32 @@
         android:inputType="textPersonName"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/emailRegister_textview"
-        app:layout_constraintHorizontal_bias="0.527"
-        app:layout_constraintStart_toStartOf="@+id/emailRegister_textview"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.531" />
+        app:layout_constraintEnd_toEndOf="@+id/register_button"
+        app:layout_constraintStart_toStartOf="@+id/register_button"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/emailRegister_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textPersonName"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/nameRegister_textview"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="@+id/nameRegister_textview"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.442" />
+        app:layout_constraintBottom_toTopOf="@+id/passwordRegister_textview"
+        app:layout_constraintEnd_toEndOf="@+id/passwordRegister_textview"
+        app:layout_constraintStart_toStartOf="@+id/passwordRegister_textview" />
 
     <TextView
         android:id="@+id/alreadyHaveAccount_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginBottom="10dp"
         android:text="Already have an account?"
-        app:layout_constraintEnd_toEndOf="@+id/register_button"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="@+id/register_button"
-        app:layout_constraintTop_toBottomOf="@+id/register_button" />
+        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintEnd_toEndOf="@+id/button3"
+        app:layout_constraintStart_toStartOf="@+id/button3" />
 
     <Button
         android:id="@+id/testLocationButton"
@@ -117,11 +105,20 @@
         android:layout_height="wrap_content"
         android:text="TestLocation
 "
+        app:layout_constraintBottom_toTopOf="@+id/selectPhotoRegister_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="bypassLogin"
+        android:text="(BYPASS)"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.962"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintTop_toBottomOf="@+id/button3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
