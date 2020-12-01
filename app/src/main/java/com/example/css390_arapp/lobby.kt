@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.renderscript.Sampler
 import android.util.Log
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_lobby.*
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.display_location.*
 import java.io.IOException
@@ -193,6 +195,36 @@ class lobby : AppCompatActivity() {
             // permission not granted
             Toast.makeText( this, "Permission not granted!", 5).show()
         }
+    }
+
+    // Function to transition to AR mode
+    // Assumes that a coordinate has been captured from the database
+    private fun startAR() {
+        val email = emailLogin_textview.text.toString()
+        val password = passwordLogin_textview.text.toString()
+
+        if (email.isEmpty() || password.isEmpty()){
+            Toast.makeText( this, "Please enter an email and password to login!", 2 ).show()
+            return
+        }
+        //Firebase Email/Password Login
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener{
+                if(it.isSuccessful) {
+                    //Login succeeded, show confirmation toast
+                    Toast.makeText(this, "Login Success!", 2).show()
+
+                    //Launch Lobby Activity
+                    val intent = Intent(this, lobby::class.java).apply {
+                        putExtra(AlarmClock.EXTRA_MESSAGE, email)
+                    }
+                    startActivity(intent)
+                }
+            }
+            .addOnFailureListener{
+                //Login Failed, show error toast
+                Toast.makeText( this, "Login Failed: ${it.message}", 10 ).show()
+            }
     }
 
     //Function to get date, to update location with last time updated
