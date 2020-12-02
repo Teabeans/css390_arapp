@@ -22,6 +22,7 @@ class ar_render : AppCompatActivity() {
         tgtTxt.text = message
 
 
+
         // Acquire camera permissions
 /*        arFragment = sceneform_fragment as ArFragment
 

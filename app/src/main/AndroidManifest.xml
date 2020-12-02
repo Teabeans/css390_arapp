@@ -2,8 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.css390_arapp">
 
+    <!-- Both "AR Optional" and "AR Required" apps require CAMERA permission. -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera.ar" android:required="true" />
+
+    <!-- Sceneform requires OpenGL ES 3.0 or later. -->
+    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
+
+    <!-- Indicates that app requires ARCore ("AR Required"). Ensures the app is
+         visible only in the Google Play Store on devices that support ARCore.
+         For "AR Optional" apps remove this line. -->
+    <uses-feature android:name="android.hardware.camera.ar" />
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -33,8 +41,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".LocationCapture" />
-    </application>
 
-    <meta-data android:name="com.google.ar.core" android:value="required" />
+        <!-- Indicates that app requires ARCore ("AR Required"). Causes the Google
+             Play Store to download and install Google Play Services for AR along
+             with the app. For an "AR Optional" app, specify "optional" instead of
+             "required".
+        -->
+        <meta-data android:name="com.google.ar.core" android:value="required" />
+
+
+
+    </application>
 
 </manifest>
