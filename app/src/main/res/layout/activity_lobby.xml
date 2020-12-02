@@ -150,7 +150,6 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="db_recv"
         android:text="QUERY"
         app:layout_constraintStart_toStartOf="@+id/db_send"
         app:layout_constraintTop_toTopOf="@+id/db_recv_key" />
