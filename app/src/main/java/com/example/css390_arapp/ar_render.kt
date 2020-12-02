@@ -18,13 +18,13 @@ class ar_render : AppCompatActivity() {
         setContentView(R.layout.activity_ar_render)
 
         // Get the Intent that started this activity and extract the string
-        val intent = Intent(this, MainActivity::class.java)
+        //val intent = Intent(this, MainActivity::class.java)
         val message = intent.getStringExtra(EXTRA_MESSAGE)
 
         // Capture the layout's TextView and set the string as its text
         val textView = findViewById<TextView>(R.id.captured_coord).apply {
-            // this.text = message
-            this.text = "THIS IS A TEST"
+             this.text = message
+             //this.text = "THIS IS A TEST"
         }
 
     }
