@@ -91,7 +91,11 @@ class lobby : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 pulledValue = dataSnapshot.value
                 // Pop a toast to confirm keypress and Key:Value capture
-                val toaster = Toast.makeText(applicationContext, "DB_RECV - $recvKey : $pulledValue", 2)
+                val toaster = Toast.makeText(
+                    applicationContext,
+                    "DB_RECV - $recvKey : $pulledValue",
+                    2
+                )
                 toaster.show()
 
                 // Change the field to the pulledValue
@@ -108,14 +112,13 @@ class lobby : AppCompatActivity() {
 
     // Function to transition to AR mode
     // Assumes that a coordinate has been captured from the database
-    fun startAR( view: View) {
+    fun startAR(view: View) {
 
         val location = findViewById<TextView>(R.id.ar_location)
-        // val capturedCoord = location.text.toString()
-        val capturedCoord = "THIS IS A TEST STRING"
-        val intent = Intent(this, ar_render::class.java).apply {
-            putExtra(EXTRA_MESSAGE, capturedCoord)
-        }
+        val capturedCoord = location.text.toString()
+
+        val intent = Intent(this, ar_render::class.java)
+        intent.putExtra("coords", capturedCoord)
         startActivity(intent)
     }
 
@@ -136,14 +139,15 @@ class lobby : AppCompatActivity() {
         //Grab Username and populate field
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
-        ref.addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot){
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
                 var username = p0.child("username").getValue()
                 //now we have the username, so update field
-                findViewById<TextView>(R.id.userfirebase_lobby_textview).apply{
+                findViewById<TextView>(R.id.userfirebase_lobby_textview).apply {
                     text = username.toString()
                 }
             }
+
             override fun onCancelled(p0: DatabaseError) {
                 //error handling
             }
@@ -157,7 +161,8 @@ class lobby : AppCompatActivity() {
             R.id.menu_sign_out -> {
                 FirebaseAuth.getInstance().signOut()
                 val intent = Intent(this, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK) //clear activities
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK) //clear activities
                 startActivity(intent)
             }
         }
@@ -173,15 +178,18 @@ class lobby : AppCompatActivity() {
 
     //function to get location and send to DB [update currently logged in user]
     private fun getLocation(){
-        Log.d("Location","Button Clicked!")
+        Log.d("Location", "Button Clicked!")
         //Check if permission is granted
-        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            Log.d("Location","Perm Granted!")
+        if(ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED){
+            Log.d("Location", "Perm Granted!")
             // permission granted, start getting current device location
             // Location is either turned off in the device setting or the the device never recorded any location from the Google Map
             if(fusedLocationClient.lastLocation == null){
-                Log.d("Location","DID NOT FOUND LAST LOCATION")
-                Toast.makeText( this, "DID NOT FOUND LAST LOCATION", 1).show()
+                Log.d("Location", "DID NOT FOUND LAST LOCATION")
+                Toast.makeText(this, "DID NOT FOUND LAST LOCATION", 1).show()
                 return
             }
             // Found last location, get time, altitude, longitude, and latitude of current device and send to DB
@@ -189,33 +197,35 @@ class lobby : AppCompatActivity() {
                 try{
                     var altAndLong = "alt:${location.altitude}, long:${location.longitude}, lat:${location.latitude}"
                     val capturedCoord = altAndLong
+
                     // Update the captured coordinate textview with the actual capture string
                     val textView = findViewById<TextView>(R.id.ar_location).apply {
                         this.text = capturedCoord
                     }
+
                     var timeOfUpdate = getDate(location.time)
                     //Update DB
                     val uid = FirebaseAuth.getInstance().uid ?: ""
                     val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
                     ref.child("location").setValue(altAndLong)
                     ref.child("timeUpdated").setValue(timeOfUpdate)
-                    Log.d("Location","Location Updated in DB")
-                    Toast.makeText( this, "Location Found and Updated in DB!!", 2).show()
-                } catch (err : IOException){
-                    Log.d("Location","Location NOT found!!")
-                    Toast.makeText( this, "Location NOT found!!", 2).show()
+                    Log.d("Location", "Location Updated in DB")
+                    Toast.makeText(this, "Location Found and Updated in DB!!", 2).show()
+                } catch (err: IOException){
+                    Log.d("Location", "Location NOT found!!")
+                    Toast.makeText(this, "Location NOT found!!", 2).show()
                     err.printStackTrace()
                 }
             }
         }
         else{
             // permission not granted
-            Toast.makeText( this, "Permission not granted!", 5).show()
+            Toast.makeText(this, "Permission not granted!", 5).show()
         }
     }
 
     //Function to get date, to update location with last time updated
-    private fun getDate(millis : Long) : String{
+    private fun getDate(millis: Long) : String{
         var dateFormat = "MM/dd/yyyy hh:mm:ss"
         var formatter = SimpleDateFormat(dateFormat)
         return formatter.format(Date(millis))
