@@ -121,16 +121,10 @@ class lobby : AppCompatActivity() {
 
         val location = findViewById<TextView>(R.id.ar_location)
         val capturedCoord = location.text.toString()
-<<<<<<< HEAD
 
         val intent = Intent(this, ar_render::class.java)
         intent.putExtra("coords", capturedCoord)
-=======
-        //val capturedCoord = "THIS IS A TEST STRING"
-        val intent = Intent(this, ar_render::class.java).apply {
-            putExtra(EXTRA_MESSAGE, capturedCoord)
-        }
->>>>>>> 8ee14da0aded907b95eb08209b2abf569b08325f
+
         startActivity(intent)
     }
 
