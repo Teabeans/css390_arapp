@@ -1,12 +1,14 @@
 package com.example.css390_arapp
 
+// For database authentication
+
+// Dunno what these are for
+// For location read?
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.provider.AlarmClock
 import android.provider.AlarmClock.EXTRA_MESSAGE
-import android.renderscript.Sampler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -14,26 +16,16 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-
-// For database authentication
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-
-// Dunno what these are for
 import kotlinx.android.synthetic.main.activity_lobby.*
-import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.display_location.*
-import org.w3c.dom.Text
-// For location read?
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -85,21 +77,6 @@ class lobby : AppCompatActivity() {
         dbKey.setValue(sendVal)
     }
 
-    // Function to transition to AR mode
-    // Assumes that a coordinate has been captured from the database
-    fun startAR( view: View) {
-        // For now, just make a toast that says 'Click!'
-        val toaster = Toast.makeText( applicationContext, "Click!", 2 )
-        toaster.show()
-
-        val location = findViewById<TextView>(R.id.ar_location)
-        val message = location.text.toString()
-        val intent = Intent(this, ar_render::class.java).apply {
-            putExtra(EXTRA_MESSAGE, message)
-        }
-        startActivity(intent)
-    }
-
     // Request information from the database
     fun db_recv(view: View) {
 
@@ -127,6 +104,19 @@ class lobby : AppCompatActivity() {
             }
         }
         dbKey.addListenerForSingleValueEvent(menuListener)
+    }
+
+    // Function to transition to AR mode
+    // Assumes that a coordinate has been captured from the database
+    fun startAR( view: View) {
+
+        val location = findViewById<TextView>(R.id.ar_location)
+        // val capturedCoord = location.text.toString()
+        val capturedCoord = "THIS IS A TEST STRING"
+        val intent = Intent(this, ar_render::class.java).apply {
+            putExtra(EXTRA_MESSAGE, capturedCoord)
+        }
+        startActivity(intent)
     }
 
     //Verify user is logged on, else send to register screen
@@ -198,6 +188,11 @@ class lobby : AppCompatActivity() {
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location ->
                 try{
                     var altAndLong = "alt:${location.altitude}, long:${location.longitude}, lat:${location.latitude}"
+                    val capturedCoord = altAndLong
+                    // Update the captured coordinate textview with the actual capture string
+                    val textView = findViewById<TextView>(R.id.ar_location).apply {
+                        this.text = capturedCoord
+                    }
                     var timeOfUpdate = getDate(location.time)
                     //Update DB
                     val uid = FirebaseAuth.getInstance().uid ?: ""
