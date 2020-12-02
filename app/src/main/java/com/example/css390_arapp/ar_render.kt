@@ -21,9 +21,17 @@ class ar_render : AppCompatActivity() {
         val tgtTxt = findViewById<TextView>(R.id.captured_coord)
         tgtTxt.text = message
 
+
         // Acquire camera permissions
+/*        arFragment = sceneform_fragment as ArFragment
 
-
+        // Adds a listener to the ARSceneView
+        // Called before processing each frame
+        arFragment.arSceneView.scene.addOnUpdateListener { frameTime ->
+            arFragment.onUpdate(frameTime)
+            onUpdate()
+        }
+*/
         // Render camera to background
 
 
