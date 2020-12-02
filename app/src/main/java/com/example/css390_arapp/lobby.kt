@@ -55,11 +55,16 @@ class lobby : AppCompatActivity() {
         myRef.setValue("Hello, World!")                    // Set a Value
 
         //If user is not logged in, return to Register/Main screen
-        verifyUserIsLoggedIn()
+        //verifyUserIsLoggedIn()
 
         //Location testing
         testLocationLobbyButton.setOnClickListener{
             getLocation()
+        }
+
+        //Query testing
+        button2.setOnClickListener{
+            queryLocation()
         }
     }
 
@@ -116,12 +121,20 @@ class lobby : AppCompatActivity() {
 
         val location = findViewById<TextView>(R.id.ar_location)
         val capturedCoord = location.text.toString()
+<<<<<<< HEAD
 
         val intent = Intent(this, ar_render::class.java)
         intent.putExtra("coords", capturedCoord)
+=======
+        //val capturedCoord = "THIS IS A TEST STRING"
+        val intent = Intent(this, ar_render::class.java).apply {
+            putExtra(EXTRA_MESSAGE, capturedCoord)
+        }
+>>>>>>> 8ee14da0aded907b95eb08209b2abf569b08325f
         startActivity(intent)
     }
 
+    /*
     //Verify user is logged on, else send to register screen
     //If logged on, show user details
     private fun verifyUserIsLoggedIn() {
@@ -153,6 +166,7 @@ class lobby : AppCompatActivity() {
             }
         })
     }
+    */
 
     //Sign Out button
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -229,5 +243,33 @@ class lobby : AppCompatActivity() {
         var dateFormat = "MM/dd/yyyy hh:mm:ss"
         var formatter = SimpleDateFormat(dateFormat)
         return formatter.format(Date(millis))
+    }
+
+    //Find location of specified username in database
+    fun queryLocation(){
+        Log.d("Query","Button Clicked!")
+        val username = db_recv_key.text.toString()
+        if(username.isEmpty()){
+            Toast.makeText( this, "text is empty", 1).show()
+            Log.d("Query","Username Empty")
+            return
+        }
+        //Grab username from database
+        val reference = FirebaseDatabase.getInstance().getReference("users/$username")
+        //Display location and timeOfUpdate
+        reference.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot){
+                var location = p0.child("location").getValue()
+                //var timeUpdated = p0.child("timeUpdated").getValue()
+                findViewById<TextView>(R.id.ar_location).apply{
+                    text = location.toString()
+                }
+                Log.d("Query","Location Updated to Field!")
+                //timeOfUpdateText.text = timeUpdated.toString()
+            }
+            override fun onCancelled(p0: DatabaseError) {
+                //error handling
+            }
+        })
     }
 }
