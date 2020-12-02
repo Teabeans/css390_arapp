@@ -21,5 +21,13 @@ class ar_render : AppCompatActivity() {
         val tgtTxt = findViewById<TextView>(R.id.captured_coord)
         tgtTxt.text = message
 
+        // Acquire camera permissions
+
+
+        // Render camera to background
+
+
+        // AR magic?
+
     }
 }
