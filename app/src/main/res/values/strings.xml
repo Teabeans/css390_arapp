@@ -23,4 +23,7 @@
     <string name="password">Password</string>
     <string name="select_photo">Select Photo</string>
     <string name="getandsend">GetAndSend</string>
+    <string name="camera_permission_toast">Camera permission is needed to run this application</string>
+    <string name="searching_for_surfaces">Searching for surfaces…</string>
+    <string name="ar_device_support">This device does not support AR</string>
 </resources>

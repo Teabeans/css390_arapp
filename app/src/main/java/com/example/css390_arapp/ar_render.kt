@@ -11,7 +11,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-/*
+
 import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper
 import com.google.ar.core.examples.java.common.helpers.DepthSettings
 import com.google.ar.core.examples.java.common.helpers.FullScreenHelper
@@ -27,7 +27,7 @@ import com.google.ar.core.examples.java.common.samplerender.Texture
 import com.google.ar.core.examples.java.common.samplerender.VertexBuffer
 import com.google.ar.core.examples.java.common.samplerender.arcore.BackgroundRenderer
 import com.google.ar.core.examples.java.common.samplerender.arcore.PlaneRenderer
-*/
+
 
 class ar_render : AppCompatActivity() {
 
