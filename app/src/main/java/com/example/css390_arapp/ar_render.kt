@@ -143,4 +143,46 @@ class ar_render : AppCompatActivity () {
 
     }
 
+    // In format #.### : #.###
+    // Assumes coord1 is where we're standing, coord2 is target
+    fun calcHaversine( coord1 : String, coord2 : String ) {
+        println( "Lat/Long 1 : ${coord1}")
+        println( "Lat/Long 2 : ${coord2}")
+        var lati1 : Double = 0.0
+        var long1 : Double = 1.0
+
+        var lati2 : Double = 2.2
+        var long2 : Double = 4.0
+
+        var reader = Scanner( coord1 )
+        lati1 = reader.nextDouble()
+        reader.next()
+        long1 = reader.nextDouble()
+
+        reader = Scanner( coord2 )
+        lati2 = reader.nextDouble()
+        reader.next()
+        long2 = reader.nextDouble()
+
+        // Constant for Earth's radius (assumes a true sphere; ignores actual oblate shape)
+        val RADIUS = 6371e3
+        val φ1 = lati1 * Math.PI/180; // φ, λ in radians
+        val φ2 = lati2 * Math.PI/180;
+        val Δφ = (lati2-lati1) * Math.PI/180;
+        val Δλ = (long2-long1) * Math.PI/180;
+
+        val a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        val d = (RADIUS * c) / 1000; // in kilometres
+/*
+        println( "Lat 1: ${lati1}")
+        println( "Long1: ${long1}")
+        println( "Lat 2: ${lati2}")
+        println( "Long2: ${long2}")
+        println( "ΔDist: ${d}")
+        println( "Rad  : ${c}")
+*/
+    }
+
 }
