@@ -7,20 +7,20 @@ package com.example.css390_arapp
 // Ripped from AR-Core example
 
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.*
+import android.location.Location
+import android.opengl.GLSurfaceView
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Size
 import android.view.Surface
 import android.view.TextureView.SurfaceTextureListener
-import android.location.Location
-import android.opengl.GLSurfaceView
-import android.util.Log
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -35,11 +35,6 @@ import com.google.ar.core.examples.java.common.samplerender.arcore.BackgroundRen
 import com.google.ar.core.examples.java.common.samplerender.arcore.PlaneRenderer
 import com.google.ar.core.examples.java.helloar.HelloArActivity
 import kotlinx.android.synthetic.main.activity_ar_render.*
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_ar_render.*
-import kotlinx.android.synthetic.main.activity_lobby.*
-import kotlinx.android.synthetic.main.activity_lobby.testLocationLobbyButton
 import java.io.IOException
 import java.util.*
 
@@ -135,6 +130,7 @@ class ar_render : AppCompatActivity () {
     private lateinit var captureRequestBuilder : CaptureRequest.Builder
     private lateinit var mBackgroundHandler : Handler
     private lateinit var mBackgroundThread: HandlerThread
+
     // Camera State Call Back
     var stateCallback: CameraDevice.StateCallback = object : CameraDevice.StateCallback() {
         override fun onOpened(camera: CameraDevice) {
@@ -312,7 +308,10 @@ class ar_render : AppCompatActivity () {
     //function to get location and textView
     private fun getLocation( ) {
         //Check if permission is granted
-        if(ActivityCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ){
+        if(ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED ){
             // permission granted, start getting current device location
             // Location is either turned off in the device setting or the the device never recorded any location from the Google Map
             if(fusedLocationClient.lastLocation == null){
@@ -329,7 +328,7 @@ class ar_render : AppCompatActivity () {
                         this.text = capturedCoord
                     }
 
-                    calcHaversine( capturedCoord, message )
+                    calcHaversine(capturedCoord, message)
 
                 }
                 catch (err: IOException){
@@ -344,21 +343,21 @@ class ar_render : AppCompatActivity () {
 
     // In format #.### : #.###
     // Assumes coord1 is where we're standing, coord2 is target
-    fun calcHaversine( coord1 : String, coord2 : String ) {
-        println( "Lat/Long 1 : ${coord1}")
-        println( "Lat/Long 2 : ${coord2}")
+    fun calcHaversine(coord1: String, coord2: String) {
+        println("Lat/Long 1 : ${coord1}")
+        println("Lat/Long 2 : ${coord2}")
         var lati1 : Double = 0.0
         var long1 : Double = 1.0
 
         var lati2 : Double = 2.2
         var long2 : Double = 4.0
 
-        var reader = Scanner( coord1 )
+        var reader = Scanner(coord1)
         lati1 = reader.nextDouble()
         reader.next()
         long1 = reader.nextDouble()
 
-        reader = Scanner( coord2 )
+        reader = Scanner(coord2)
         lati2 = reader.nextDouble()
         reader.next()
         long2 = reader.nextDouble()
@@ -370,8 +369,10 @@ class ar_render : AppCompatActivity () {
         val Δφ = (lati2-lati1) * Math.PI/180;
         val Δλ = (long2-long1) * Math.PI/180;
 
-        val a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
-        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        val a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(
+            Δλ / 2
+        );
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         val d = (RADIUS * c) / 1000; // in kilometres
 

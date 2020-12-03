@@ -18,6 +18,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.example.css390_arapp.arlocations.ARActivity
+import com.example.css390_arapp.registerlogin.LoginActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
@@ -65,6 +67,12 @@ class lobby : AppCompatActivity() {
         //Query testing
         button2.setOnClickListener{
             queryLocation()
+        }
+
+        //ARActivity Testing
+        arTestLobbyButton.setOnClickListener{
+            val intent = Intent(this, ARActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -134,7 +142,7 @@ class lobby : AppCompatActivity() {
         when (item?.itemId){
             R.id.menu_sign_out -> {
                 FirebaseAuth.getInstance().signOut()
-                val intent = Intent(this, MainActivity::class.java)
+                val intent = Intent(this, LoginActivity::class.java)
                 intent.flags =
                     Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK) //clear activities
                 startActivity(intent)

@@ -27,21 +27,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ar_render"></activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".lobby">
+        <activity android:name=".arlocations.ARActivity"/>
+        <activity android:name=".registerlogin.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".registerlogin.RegisterActivity" />
+        <activity android:name=".lobby"/>
+        <activity android:name=".MainActivity"/>
         <activity android:name=".LocationCapture" />
 
         <!-- Indicates that app requires ARCore ("AR Required"). Causes the Google

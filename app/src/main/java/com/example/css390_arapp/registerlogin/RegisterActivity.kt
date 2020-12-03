@@ -1,51 +1,30 @@
-package com.example.css390_arapp
+package com.example.css390_arapp.registerlogin
 
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.provider.MediaStore
 import android.util.Log
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.css390_arapp.registerlogin.LoginActivity
-import com.example.css390_arapp.registerlogin.User
+import com.example.css390_arapp.R
+import com.example.css390_arapp.lobby
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        // Toast test 2020.11.18
-        val toaster = Toast.makeText( applicationContext, "Hello, World!", 5 )
-        toaster.show()
-
-        // Step 1: Create variables to hold all information related to this activity
-        // In format: 'val {VariableName} = findViewById<{ViewType}>(R.id.{ViewID})
-        val username = findViewById<EditText>(R.id.nameRegister_textview)
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        val login = findViewById<Button>(R.id.button3)
+        setContentView(R.layout.activity_register)
 
         //Register Button with Firebase
         register_button.setOnClickListener {
             performRegister()
-        }
-
-        //Already have account button, redirect to Login Activity
-        alreadyHaveAccount_textview.setOnClickListener{
-            //launch Login Activity
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
         }
 
         //Select Photo Button
@@ -53,12 +32,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, 0)
-        }
-
-        //Location testing
-        testLocationButton.setOnClickListener{
-            val intent = Intent(this, LocationCapture::class.java)
-            startActivity(intent)
         }
     }
 
@@ -81,51 +54,6 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
-
-    // Do something in response to button
-    fun sendMessage(view: View) {
-        // For now, just make a toast that says 'Click!'
-        val toaster = Toast.makeText( applicationContext, "Click!", 2 )
-        toaster.show()
-
-        val username = findViewById<EditText>(R.id.nameRegister_textview)
-        val message = username.text.toString()
-        val intent = Intent(this, lobby::class.java).apply {
-            putExtra(EXTRA_MESSAGE, message)
-        }
-        startActivity(intent)
-
-    }
-
-    // Do something in response to button
-    fun bypassLogin(view: View) {
-        // For now, just make a toast that says 'Click!'
-        val toaster = Toast.makeText( applicationContext, "Bypassing...", 2 )
-        toaster.show()
-
-        val message = "DEV_USER"
-        val intent = Intent(this, lobby::class.java).apply {
-            putExtra(EXTRA_MESSAGE, message)
-        }
-        startActivity(intent)
-
-    }
-
-    /*
-    private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
-        // TODO : initiate successful logged in experience
-        Toast.makeText(
-            applicationContext,
-            "$welcome $displayName",
-            Toast.LENGTH_LONG
-        ).show()
-
-        val i = Intent(this@MainActivity, lobby::class.java)
-        startActivity( i )
-    }
-    */
 
     //Function for User Registration
     private fun performRegister() {
@@ -199,4 +127,4 @@ class MainActivity : AppCompatActivity() {
 }
 
 //User object for Firebase updating
-//class User(val uid: String, val username: String, val profileImageUrl: String, val location: String, val timeUpdated: String)
+class User(val uid: String, val username: String, val profileImageUrl: String, val location: String, val timeUpdated: String)

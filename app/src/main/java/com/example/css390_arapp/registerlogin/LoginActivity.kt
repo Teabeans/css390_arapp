@@ -1,13 +1,16 @@
-package com.example.css390_arapp
+package com.example.css390_arapp.registerlogin
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.AlarmClock
+import android.view.View
 import android.widget.Toast
+import com.example.css390_arapp.MainActivity
+import com.example.css390_arapp.R
+import com.example.css390_arapp.lobby
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_main.*
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,6 +20,22 @@ class LoginActivity : AppCompatActivity() {
         //Login Button with Firebase
         loginLogin_button.setOnClickListener {
             performLogin()
+        }
+
+        registerTextView.setOnClickListener{
+            //launch Register Activity
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
+
+        bypassLoginButton.setOnClickListener{
+            val intent = Intent(this, lobby::class.java)
+            startActivity(intent)
+        }
+
+        oldMainLogin_Button.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -47,5 +66,18 @@ class LoginActivity : AppCompatActivity() {
                 //Login Failed, show error toast
                 Toast.makeText( this, "Login Failed: ${it.message}", 10 ).show()
             }
+    }
+
+    fun bypassLogin(view: View) {
+        // For now, just make a toast that says 'Click!'
+        val toaster = Toast.makeText( applicationContext, "Bypassing...", 2 )
+        toaster.show()
+
+        val message = "DEV_USER"
+        val intent = Intent(this, lobby::class.java).apply {
+            putExtra(AlarmClock.EXTRA_MESSAGE, message)
+        }
+        startActivity(intent)
+
     }
 }
