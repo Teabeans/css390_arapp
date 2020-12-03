@@ -57,7 +57,7 @@ class lobby : AppCompatActivity() {
         //If user is not logged in, return to Register/Main screen
         //verifyUserIsLoggedIn()
 
-        //Location testing
+        //Location testing - Bind the button to a function call
         testLocationLobbyButton.setOnClickListener{
             getLocation()
         }
@@ -128,40 +128,6 @@ class lobby : AppCompatActivity() {
         startActivity(intent)
     }
 
-    /*
-    //Verify user is logged on, else send to register screen
-    //If logged on, show user details
-    private fun verifyUserIsLoggedIn() {
-        val uid = FirebaseAuth.getInstance().uid
-        if (uid == null) {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK) //clear activities
-            startActivity(intent)
-        }
-        //Populate fields with user info for testing/confirmation
-        //Populate UID
-        findViewById<TextView>(R.id.uuidfirebase_lobby_textview).apply {
-            text = uid
-        }
-        //Grab Username and populate field
-        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
-
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                var username = p0.child("username").getValue()
-                //now we have the username, so update field
-                findViewById<TextView>(R.id.userfirebase_lobby_textview).apply {
-                    text = username.toString()
-                }
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-                //error handling
-            }
-        })
-    }
-    */
-
     //Sign Out button
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         //handle menu options
@@ -203,8 +169,8 @@ class lobby : AppCompatActivity() {
             // Found last location, get time, altitude, longitude, and latitude of current device and send to DB
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location ->
                 try{
-                    var altAndLong = "alt:${location.altitude}, long:${location.longitude}, lat:${location.latitude}"
-                    val capturedCoord = altAndLong
+                    var latLong = "${location.latitude} : ${location.longitude}"
+                    val capturedCoord = latLong
 
                     // Update the captured coordinate textview with the actual capture string
                     val textView = findViewById<TextView>(R.id.ar_location).apply {
@@ -215,7 +181,7 @@ class lobby : AppCompatActivity() {
                     //Update DB
                     val uid = FirebaseAuth.getInstance().uid ?: ""
                     val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
-                    ref.child("location").setValue(altAndLong)
+                    ref.child("location").setValue(latLong)
                     ref.child("timeUpdated").setValue(timeOfUpdate)
                     Log.d("Location", "Location Updated in DB")
                     Toast.makeText(this, "Location Found and Updated in DB!!", 2).show()

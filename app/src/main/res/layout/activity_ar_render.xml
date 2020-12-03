@@ -6,39 +6,105 @@
     android:layout_height="match_parent"
     tools:context=".ar_render">
 
-    <android.opengl.GLSurfaceView
-        android:id="@+id/surfaceview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="top"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextureView
-        android:id="@+id/cameraView"
-        android:layout_width="409dp"
-        android:layout_height="600dp"
-        app:layout_constraintBottom_toTopOf="@+id/captured_coord"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.258" />
-
     <TextView
         android:id="@+id/captured_coord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="COORDINATE GOES HERE"
+        android:text="TGT COORDINATE GOES HERE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextureView
+        android:id="@+id/cameraView"
+        android:layout_width="409dp"
+        android:layout_height="550dp"
+        app:layout_constraintBottom_toTopOf="@+id/calcDistance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.93" />
+        app:layout_constraintVertical_bias="0.0" />
 
+    <Button
+        android:id="@+id/locationRefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:text="REFRESH"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="TARGET"
+        app:layout_constraintBottom_toTopOf="@+id/captured_coord"
+        app:layout_constraintEnd_toEndOf="@+id/captured_coord"
+        app:layout_constraintStart_toStartOf="@+id/captured_coord" />
+
+    <TextView
+        android:id="@+id/myPosition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="MY COORDINATE GOES HERE"
+        app:layout_constraintEnd_toEndOf="@+id/captured_coord"
+        app:layout_constraintStart_toStartOf="@+id/captured_coord"
+        app:layout_constraintTop_toBottomOf="@+id/captured_coord" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="MY POSITION"
+        app:layout_constraintBottom_toTopOf="@+id/myPosition"
+        app:layout_constraintEnd_toEndOf="@+id/myPosition"
+        app:layout_constraintStart_toStartOf="@+id/myPosition" />
+
+    <TextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="DISTANCE :"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.85" />
+
+    <TextView
+        android:id="@+id/bearing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="BEARING :"
+        app:layout_constraintStart_toStartOf="@+id/distance"
+        app:layout_constraintTop_toBottomOf="@+id/distance" />
+
+    <TextView
+        android:id="@+id/calcDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:text="CALCULATED DISTANCE"
+        app:layout_constraintBottom_toBottomOf="@+id/distance"
+        app:layout_constraintStart_toStartOf="@+id/distance" />
+
+    <TextView
+        android:id="@+id/calcBearing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CALCULATED BEARING"
+        app:layout_constraintBottom_toBottomOf="@+id/bearing"
+        app:layout_constraintStart_toStartOf="@+id/calcDistance" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

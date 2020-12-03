@@ -11,17 +11,22 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.*
-import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Size
 import android.view.Surface
 import android.view.TextureView.SurfaceTextureListener
+import android.location.Location
+import android.opengl.GLSurfaceView
+import android.util.Log
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.ar.core.Anchor
 import com.google.ar.core.Session
 import com.google.ar.core.examples.java.common.helpers.*
@@ -30,6 +35,12 @@ import com.google.ar.core.examples.java.common.samplerender.arcore.BackgroundRen
 import com.google.ar.core.examples.java.common.samplerender.arcore.PlaneRenderer
 import com.google.ar.core.examples.java.helloar.HelloArActivity
 import kotlinx.android.synthetic.main.activity_ar_render.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import kotlinx.android.synthetic.main.activity_ar_render.*
+import kotlinx.android.synthetic.main.activity_lobby.*
+import kotlinx.android.synthetic.main.activity_lobby.testLocationLobbyButton
+import java.io.IOException
 import java.util.*
 
 
@@ -213,11 +224,14 @@ class ar_render : AppCompatActivity () {
         mBackgroundThread.start()
         mBackgroundHandler = Handler()
     }
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_ar_render)
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Get the Intent that started this activity and extract the string
         val intent = this.getIntent()
@@ -230,6 +244,11 @@ class ar_render : AppCompatActivity () {
         // Rendering. The Renderers are created here, and initialized when the GL surface is created.
         val surfaceView: GLSurfaceView? = findViewById<GLSurfaceView?>(R.id.surfaceview)
         val displayRotationHelper = DisplayRotationHelper( /*context=*/this)
+
+        //Location testing - Bind the button to a function call
+        locationRefresh.setOnClickListener{
+            getLocation()
+        }
 
         // Set up renderer.
         //render = SampleRender(surfaceView, this, assets)
@@ -286,6 +305,38 @@ class ar_render : AppCompatActivity () {
             manager.openCamera(cameraID, stateCallback, null)
         } catch (e: CameraAccessException) {
             e.printStackTrace()
+        }
+    }
+
+    //function to get location and textView
+    private fun getLocation( ) {
+        //Check if permission is granted
+        if(ActivityCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ){
+            // permission granted, start getting current device location
+            // Location is either turned off in the device setting or the the device never recorded any location from the Google Map
+            if(fusedLocationClient.lastLocation == null){
+                return
+            }
+            // Found last location, get time, altitude, longitude, and latitude of current device and send to DB
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location ->
+                try{
+                    var latLong = "${location.latitude} : ${location.longitude}"
+                    val capturedCoord = latLong
+
+                    // Update the captured coordinate textview with the actual capture string
+                    val textView = findViewById<TextView>(R.id.myPosition).apply {
+                        this.text = capturedCoord
+                    }
+
+                }
+                catch (err: IOException){
+
+                }
+            }
+        }
+        else{
+            // permission not granted
+            Toast.makeText(this, "Permission not granted!", 5).show()
         }
     }
 
