@@ -7,10 +7,21 @@ package com.example.css390_arapp
 // Ripped from AR-Core example
 
 
+import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.SurfaceTexture
+import android.hardware.camera2.*
 import android.opengl.GLSurfaceView
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
+import android.util.Size
+import android.view.Surface
+import android.view.TextureView.SurfaceTextureListener
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.google.ar.core.Anchor
 import com.google.ar.core.Session
 import com.google.ar.core.examples.java.common.helpers.*
@@ -18,6 +29,7 @@ import com.google.ar.core.examples.java.common.samplerender.*
 import com.google.ar.core.examples.java.common.samplerender.arcore.BackgroundRenderer
 import com.google.ar.core.examples.java.common.samplerender.arcore.PlaneRenderer
 import com.google.ar.core.examples.java.helloar.HelloArActivity
+import kotlinx.android.synthetic.main.activity_ar_render.*
 import java.util.*
 
 
@@ -105,9 +117,106 @@ class ar_render : AppCompatActivity () {
     private val worldLightDirection = floatArrayOf(0.0f, 0.0f, 0.0f, 0.0f)
     private val viewLightDirection = FloatArray(4) // view x world light direction
 
+    private var REQUEST_CAMERA_PERMISSION = 100
+    private lateinit var imageDimension : Size
+    private lateinit var cameraDevice: CameraDevice
+    private lateinit var cameraCaptureSessions : CameraCaptureSession
+    private lateinit var captureRequestBuilder : CaptureRequest.Builder
+    private lateinit var mBackgroundHandler : Handler
+    private lateinit var mBackgroundThread: HandlerThread
+    // Camera State Call Back
+    var stateCallback: CameraDevice.StateCallback = object : CameraDevice.StateCallback() {
+        override fun onOpened(camera: CameraDevice) {
+            cameraDevice = camera
+            createCameraPreview()
+        }
+
+        override fun onDisconnected(cameraDevice: CameraDevice) {
+            cameraDevice.close()
+        }
+
+        override fun onError(cameraDevice: CameraDevice, i: Int) {
+            cameraDevice.close()
+            //cameraDevice = null
+        }
+    }
+
+    // Camera to texture preview
+    private fun createCameraPreview() {
+        try {
+            var texture = cameraView.surfaceTexture
+            assert(texture != null)
+            texture.setDefaultBufferSize(imageDimension.width, imageDimension.height)
+            var surface = Surface(texture)
+            captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+            captureRequestBuilder.addTarget(surface)
+            cameraDevice.createCaptureSession(
+                Arrays.asList(surface),
+                object : CameraCaptureSession.StateCallback() {
+                    override fun onConfigured(cameraCaptureSession: CameraCaptureSession) {
+                        if (cameraDevice == null) return
+                        cameraCaptureSessions = cameraCaptureSession
+                        Toast.makeText(this@ar_render, "Camera!", 1).show()
+                        updatePreview()
+                    }
+
+                    override fun onConfigureFailed(cameraCaptureSession: CameraCaptureSession) {
+                        Toast.makeText(this@ar_render, "Changed", 1).show()
+                    }
+                },
+                null
+            )
+        } catch (e: CameraAccessException) {
+            e.printStackTrace()
+        }
+    }
+
+    // Update Camera Preview
+    private fun updatePreview() {
+        if (cameraDevice == null) Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+        captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO)
+        try {
+            cameraCaptureSessions.setRepeatingRequest(
+                captureRequestBuilder.build(),
+                null,
+                mBackgroundHandler
+            )
+        } catch (e: CameraAccessException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startBackgroundThread()
+        if (cameraView.isAvailable()) openCamera() else cameraView.setSurfaceTextureListener(
+            textureListener
+        )
+    }
+
+    override fun onPause() {
+        stopBackgroundThread()
+        super.onPause()
+    }
+
+    private fun stopBackgroundThread() {
+        mBackgroundThread.quitSafely()
+        try {
+            mBackgroundThread.join()
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun startBackgroundThread() {
+        mBackgroundThread = HandlerThread("Camera Background")
+        mBackgroundThread.start()
+        mBackgroundHandler = Handler()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_ar_render)
 
         // Get the Intent that started this activity and extract the string
@@ -126,7 +235,9 @@ class ar_render : AppCompatActivity () {
         //render = SampleRender(surfaceView, this, assets)
 
         // Acquire camera permissions
-
+        var textureView = cameraView
+        assert(textureView != null)
+        textureView.setSurfaceTextureListener(textureListener)
 /*
 
         // Adds a listener to the ARSceneView
@@ -140,7 +251,41 @@ class ar_render : AppCompatActivity () {
 
 
         // AR magic?
-
     }
 
+    var textureListener: SurfaceTextureListener = object : SurfaceTextureListener {
+        override fun onSurfaceTextureAvailable(surfaceTexture: SurfaceTexture, i: Int, i1: Int) {
+            openCamera()
+        }
+
+        override fun onSurfaceTextureSizeChanged(surfaceTexture: SurfaceTexture, i: Int, i1: Int) {}
+        override fun onSurfaceTextureDestroyed(surfaceTexture: SurfaceTexture): Boolean {
+            return false
+        }
+
+        override fun onSurfaceTextureUpdated(surfaceTexture: SurfaceTexture) {}
+    }
+
+    // Open camera and output to text preview
+    private fun openCamera() {
+        val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        try {
+            var cameraID = manager.cameraIdList[0]
+            var characteristics = manager.getCameraCharacteristics(cameraID)
+            var map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+            assert(map != null)
+            imageDimension = map!!.getOutputSizes(SurfaceTexture::class.java)[0]
+            if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.CAMERA),
+                    REQUEST_CAMERA_PERMISSION
+                )
+                return
+            }
+            manager.openCamera(cameraID, stateCallback, null)
+        } catch (e: CameraAccessException) {
+            e.printStackTrace()
+        }
+    }
 }
