@@ -34,7 +34,10 @@ public class AROverlayView extends View {
 
         //Demo points
         arPoints = new ArrayList<ARPoint>() {{
-            add(new ARPoint("Location!", 37.5386067, -121.9878683, 0));
+            add(new ARPoint("New York NY", 40.707710, -74.012944, 0));
+            add(new ARPoint("Vancouver BC", 49.233741, -123.119525, 0));
+            add(new ARPoint("Los Angeles CA", 33.925130, -118.175464, 0));
+            add(new ARPoint("Tokyo JP", 35.689487, 139.691711, 0));
         }};
     }
 
