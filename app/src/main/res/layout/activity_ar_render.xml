@@ -16,6 +16,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextureView
+        android:id="@+id/cameraView"
+        android:layout_width="409dp"
+        android:layout_height="633dp"
+        app:layout_constraintBottom_toTopOf="@+id/captured_coord"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></TextureView>
+
     <TextView
         android:id="@+id/captured_coord"
         android:layout_width="wrap_content"

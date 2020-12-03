@@ -14,15 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#extension GL_OES_EGL_image_external_essl3 : require
-precision mediump float;
 
-in vec2 v_TexCoord;
+uniform mat4 u_ModelView;
+uniform mat4 u_ModelViewProjection;
 
-uniform samplerExternalOES u_Texture;
+layout(location = 0) in vec4 a_Position;
+layout(location = 1) in vec2 a_TexCoord;
+layout(location = 2) in vec3 a_Normal;
 
-layout(location = 0) out vec4 o_FragColor;
+out vec3 v_ViewPosition;
+out vec3 v_ViewNormal;
+out vec2 v_TexCoord;
+out vec3 v_ScreenSpacePosition;
 
 void main() {
-  o_FragColor = texture(u_Texture, v_TexCoord);
+  v_ViewPosition = (u_ModelView * a_Position).xyz;
+  v_ViewNormal = normalize((u_ModelView * vec4(a_Normal, 0.0)).xyz);
+  v_TexCoord = a_TexCoord;
+  gl_Position = u_ModelViewProjection * a_Position;
+  v_ScreenSpacePosition = gl_Position.xyz / gl_Position.w;
 }

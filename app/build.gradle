@@ -37,7 +37,7 @@ dependencies {
     // ARCore dependency
     implementation 'com.google.ar:core:1.21.0'
     // Provides ArFragment, and other UX resources.
-    implementation 'com.google.ar.sceneform:plugin:1.15.0'
+    implementation 'com.google.ar.sceneform:plugin:1.17.1'
 
     // Obj - a simple Wavefront OBJ file loader
     // https://github.com/javagl/Obj

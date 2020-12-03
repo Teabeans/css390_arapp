@@ -123,7 +123,7 @@ class ar_render : AppCompatActivity () {
         val displayRotationHelper = DisplayRotationHelper( /*context=*/this)
 
         // Set up renderer.
-        val render = SampleRender(surfaceView, this, assets)
+        //render = SampleRender(surfaceView, this, assets)
 
         // Acquire camera permissions
 
@@ -142,7 +142,5 @@ class ar_render : AppCompatActivity () {
         // AR magic?
 
     }
-
-
 
 }
