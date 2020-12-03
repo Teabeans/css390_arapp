@@ -120,6 +120,7 @@ class ar_render : AppCompatActivity () {
     private val viewLightDirection = FloatArray(4) // view x world light direction
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    var message = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,7 +130,7 @@ class ar_render : AppCompatActivity () {
 
         // Get the Intent that started this activity and extract the string
         val intent = this.getIntent()
-        val message : String = intent.getStringExtra("coords")
+        message = intent.getStringExtra("coords")
 
         // Capture the layout's TextView and set the string as its text
         val tgtTxt = findViewById<TextView>(R.id.captured_coord)
@@ -185,9 +186,10 @@ class ar_render : AppCompatActivity () {
                         this.text = capturedCoord
                     }
 
+                    calcHaversine( capturedCoord, message )
+
                 }
                 catch (err: IOException){
-
                 }
             }
         }
@@ -229,7 +231,16 @@ class ar_render : AppCompatActivity () {
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
         val d = (RADIUS * c) / 1000; // in kilometres
-/*
+
+        val textView = findViewById<TextView>(R.id.calcDistance).apply {
+            this.text = "${d}"
+        }
+
+        val textView2 = findViewById<TextView>(R.id.calcBearing).apply {
+            this.text = "${a}"
+        }
+
+    /*
         println( "Lat 1: ${lati1}")
         println( "Long1: ${long1}")
         println( "Lat 2: ${lati2}")
