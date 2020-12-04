@@ -7,9 +7,13 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.opengl.Matrix;
+import android.util.Log;
 import android.view.View;
 
+import com.example.css390_arapp.lobby;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,15 +29,26 @@ public class AROverlayView extends View {
     private float[] rotatedProjectionMatrix = new float[16];
     private Location currentLocation;
     private List<ARPoint> arPoints;
+    private String userCoord = ARActivity.userCoordinates;
+    private String usernameCoord = ARActivity.usernameCoord;
+    private String username;
+    private double userlat;
+    private double userlong;
 
 
     public AROverlayView(Context context) {
         super(context);
-
         this.context = context;
 
-        //Demo points
+        //Firebase user info split
+        username = usernameCoord;
+        String namepass[] = userCoord.split(":");
+        double[] doubleArray = Arrays.stream(namepass).mapToDouble(Double::parseDouble).toArray();
+        userlat = doubleArray[0];
+        userlong = doubleArray[1];
+        //Points
         arPoints = new ArrayList<ARPoint>() {{
+            add(new ARPoint(username, userlat, userlong, 0));
             add(new ARPoint("New York NY", 40.707710, -74.012944, 0));
             add(new ARPoint("Vancouver BC", 49.233741, -123.119525, 0));
             add(new ARPoint("Los Angeles CA", 33.925130, -118.175464, 0));

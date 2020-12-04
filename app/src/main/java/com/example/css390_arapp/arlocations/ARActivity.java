@@ -54,7 +54,7 @@ public class ARActivity extends AppCompatActivity implements SensorEventListener
     private TextView tvBearing;
 
     private SensorManager sensorManager;
-    private final static int REQUEST_CAMERA_PERMISSIONS_CODE = 11;
+    public static final int REQUEST_CAMERA_PERMISSIONS_CODE = 11;
     public static final int REQUEST_LOCATION_PERMISSIONS_CODE = 0;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // 10 meters
@@ -66,11 +66,24 @@ public class ARActivity extends AppCompatActivity implements SensorEventListener
     boolean isNetworkEnabled;
     boolean locationServiceAvailable;
     private float declination;
+    //Public strings for holding username + usercoordinates from firebase
+    public static String userCoordinates;
+    public static String usernameCoord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar);
+        //Grab passed through intent message/user coordinates
+        Bundle extras = getIntent().getExtras();
+        if(extras == null) {
+            userCoordinates = null;
+        } else{
+            userCoordinates = extras.getString("coords");
+            usernameCoord = extras.getString("username");
+            Log.d("User passed through!",usernameCoord);
+            Log.d("Cord passed through!",userCoordinates);
+        }
 
         sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
         cameraContainerLayout = findViewById(R.id.camera_container_layout);
@@ -96,7 +109,7 @@ public class ARActivity extends AppCompatActivity implements SensorEventListener
     }
 
     public void requestCameraPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && this.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (this.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             this.requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSIONS_CODE);
         } else {
             initARCameraView();
@@ -104,8 +117,7 @@ public class ARActivity extends AppCompatActivity implements SensorEventListener
     }
 
     public void requestLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSIONS_CODE);
         } else {
             initLocationService();
@@ -224,8 +236,7 @@ public class ARActivity extends AppCompatActivity implements SensorEventListener
 
     private void initLocationService() {
 
-        if ( Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED) {
             return  ;
         }
 

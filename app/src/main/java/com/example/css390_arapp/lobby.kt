@@ -4,6 +4,7 @@ package com.example.css390_arapp
 
 // Dunno what these are for
 // For location read?
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -28,6 +29,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_lobby.*
+import kotlinx.android.synthetic.main.display_location.*
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,6 +42,7 @@ class lobby : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lobby)
+        requestPermissions()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -71,12 +74,103 @@ class lobby : AppCompatActivity() {
 
         //ARActivity Testing
         arTestLobbyButton.setOnClickListener{
-            val intent = Intent(this, ARActivity::class.java)
-            startActivity(intent)
+
+            //Firebase user info split
+            Log.d("userinfosplit", "here")
+
+            val location = findViewById<TextView>(R.id.ar_location)
+            val capturedCoord = location.text.toString()
+            val username = findViewById<TextView>(R.id.db_recv_key)
+            val userCaptureCoord = username.text.toString()
+
+            if (userCaptureCoord == null || capturedCoord == null || capturedCoord == "CAPTURED COORD") {
+                val intent = Intent(this, ARActivity::class.java)
+                intent.putExtra("username", "test")
+                intent.putExtra("coords", "0:0")
+                startActivity(intent)
+            }
+            else {
+                val intent = Intent(this, ARActivity::class.java)
+                intent.putExtra("username", userCaptureCoord)
+                intent.putExtra("coords", capturedCoord)
+                startActivity(intent)
+            }
+
+        }
+
+        getLocationButton2.setOnClickListener {
+            getLocationUser()
+        }
+    }
+
+    private fun getLocationUser(){
+        //Check if permission is granted
+        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            // permission granted, start getting current device location
+
+            // Location is either turned off in the device setting or the the device never recorded any location from the Google Map
+            if(fusedLocationClient.lastLocation == null){
+                Toast.makeText( this, "DID NOT FOUND LAST LOCATION", 1).show()
+                return
+            }
+            // Found last location, get time, altitude, longitude, and latitude of current device and output on screen
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location ->
+                try{
+                    var altAndLong = "${location.latitude} : ${location.longitude}"
+                    var timeOfUpdate = getDate(location.time)
+                    locationTextDisplay2.text = altAndLong
+                    timeTextView2.text = "This location was update on: " + timeOfUpdate
+                    sendLocation(altAndLong, timeOfUpdate)
+                } catch (err : IOException){
+                    locationTextDisplay2.text = "No location found"
+                    sendLocation("No location", "Not found")
+                    err.printStackTrace()
+                }
+            }
+        }
+        else{
+            // permission not granted
+            locationTextDisplay2.text = "Permission not granted"
+        }
+    }
+
+    //Send location to database with time and tempUsername
+    private fun sendLocation(loc : String, time : String){
+        if(tempUserNameText2.length() <= 0){
+            Toast.makeText(this, "Enter a username!", 1).show()
+            return
+        }
+
+        val username = tempUserNameText2.editableText.toString()
+        var user = LocationCapture.TempLocationUser(username, loc, time) //Create a TempLocationUser object
+        val reference = FirebaseDatabase.getInstance().getReference("users")
+
+        reference.child(username).setValue(user).addOnSuccessListener {
+            Log.d("Location to database", "Success!")
+            Toast.makeText(this, "Location Sent!", 1).show()
+        }.addOnFailureListener{
+            Log.d("Location to database", "Failure!")
+            Toast.makeText(this, "Unable to send location!", 1).show()
         }
     }
 
 
+    //Small "fix" for permission request crashing on ARActivity
+    //Cannot yet request both permissions at once but this grabs camera at least...
+    fun requestPermissions(){
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                arrayOf(Manifest.permission.CAMERA),
+                ARActivity.REQUEST_CAMERA_PERMISSIONS_CODE
+            )
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    ARActivity.REQUEST_LOCATION_PERMISSIONS_CODE
+                )
+            }
+        }
+    }
     // Send a key:value pair to the database
     fun db_send(view: View) {
         val sendKeyField = findViewById<EditText>(R.id.db_send_key)
@@ -215,26 +309,27 @@ class lobby : AppCompatActivity() {
 
     //Find location of specified username in database
     fun queryLocation(){
-        Log.d("Query","Button Clicked!")
+        Log.d("Query", "Button Clicked!")
         val username = db_recv_key.text.toString()
         if(username.isEmpty()){
-            Toast.makeText( this, "text is empty", 1).show()
-            Log.d("Query","Username Empty")
+            Toast.makeText(this, "text is empty", 1).show()
+            Log.d("Query", "Username Empty")
             return
         }
         //Grab username from database
         val reference = FirebaseDatabase.getInstance().getReference("users/$username")
         //Display location and timeOfUpdate
-        reference.addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot){
+        reference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
                 var location = p0.child("location").getValue()
                 //var timeUpdated = p0.child("timeUpdated").getValue()
-                findViewById<TextView>(R.id.ar_location).apply{
+                findViewById<TextView>(R.id.ar_location).apply {
                     text = location.toString()
                 }
-                Log.d("Query","Location Updated to Field!")
+                Log.d("Query", "Location Updated to Field!")
                 //timeOfUpdateText.text = timeUpdated.toString()
             }
+
             override fun onCancelled(p0: DatabaseError) {
                 //error handling
             }
