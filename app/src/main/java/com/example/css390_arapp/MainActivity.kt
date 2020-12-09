@@ -161,8 +161,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         //random filename for now
-        val filename = UUID.randomUUID().toString()
-        val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
+        val filename = nameRegister_textview.text.toString() + ".jpg";
+        val ref = FirebaseStorage.getInstance().getReference("/images").child(filename)
 
         ref.putFile(selectedPhotoUri!!)
             .addOnSuccessListener {

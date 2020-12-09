@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
@@ -13,6 +14,7 @@ import com.example.css390_arapp.lobby
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.android.synthetic.main.activity_lobby.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -89,7 +91,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         //random filename for now
-        val filename = UUID.randomUUID().toString()
+        val filename = nameRegister_textview.text.toString() + ".jpg";
         val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
 
         ref.putFile(selectedPhotoUri!!)
@@ -106,17 +108,19 @@ class RegisterActivity : AppCompatActivity() {
     //Function to add user information and user image to database
     private fun saveUserToFirebase(profileImageUrl: String) {
         val uid = FirebaseAuth.getInstance().uid ?: ""
-        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
         //Create user object to variable 'user'
         val user = User(uid, nameRegister_textview.text.toString(), profileImageUrl, "alt long lat", "time")
+        // Store email as key and username, replace '.' with 1
+        FirebaseDatabase.getInstance().getReference("emails").child(emailRegister_textview.text.toString().replace(".", "1")).setValue(user.username)
+        val ref = FirebaseDatabase.getInstance().getReference("users").child(nameRegister_textview.text.toString())
         //Update user object in database
         ref.setValue(user)
             .addOnSuccessListener {
                 Log.d("Save User to Firebase:", "Success!")
-
                 //Launch Lobby Activity
                 val intent = Intent(this, lobby::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK) //clear activities
+                intent.putExtra(AlarmClock.EXTRA_MESSAGE, user.username)
                 startActivity(intent)
             }
             .addOnFailureListener {

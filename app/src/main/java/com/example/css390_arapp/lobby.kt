@@ -47,12 +47,26 @@ class lobby : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Get the Intent that started this activity and extract the string
-        val message = intent.getStringExtra(EXTRA_MESSAGE)
-
+        var message = intent.getStringExtra(EXTRA_MESSAGE)
         // Capture the layout's TextView and set the string as its text
         val textView = findViewById<TextView>(R.id.statusReport).apply {
             text = message
         }
+        val emailR = message.replace(".", "1")
+
+        // get the username with this email for lobby intent
+        var ref = FirebaseDatabase.getInstance().getReference("emails/$emailR")
+        ref.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot){
+                if(p0.exists()){
+                    statusReport.text = p0.getValue().toString()
+                }
+            }
+            override fun onCancelled(p0: DatabaseError) {
+                //error handling
+            }
+        })
+
 
         // Write a message to the database
         val database = FirebaseDatabase.getInstance()      // Bind the database into the application
@@ -281,7 +295,7 @@ class lobby : AppCompatActivity() {
 
                     var timeOfUpdate = getDate(location.time)
                     //Update DB
-                    val uid = FirebaseAuth.getInstance().uid ?: ""
+                    val uid = statusReport.text.toString()
                     val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
                     ref.child("location").setValue(latLong)
                     ref.child("timeUpdated").setValue(timeOfUpdate)

@@ -2,6 +2,7 @@ package com.example.css390_arapp.arlocations;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -17,9 +18,11 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.css390_arapp.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -69,7 +72,8 @@ public class ARActivity extends AppCompatActivity implements SensorEventListener
     //Public strings for holding username + usercoordinates from firebase
     public static String userCoordinates;
     public static String usernameCoord;
-
+    public static ImageView profileImg;
+    public static Bitmap bitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,12 +88,12 @@ public class ARActivity extends AppCompatActivity implements SensorEventListener
             Log.d("User passed through!",usernameCoord);
             Log.d("Cord passed through!",userCoordinates);
         }
-
         sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
         cameraContainerLayout = findViewById(R.id.camera_container_layout);
         surfaceView = findViewById(R.id.surface_view);
         tvCurrentLocation = findViewById(R.id.tv_current_location);
         tvBearing = findViewById(R.id.tv_bearing);
+        profileImg = findViewById(R.id.profile_image);
         arOverlayView = new AROverlayView(this);
     }
 

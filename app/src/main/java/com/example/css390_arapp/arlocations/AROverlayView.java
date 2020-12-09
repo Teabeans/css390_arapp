@@ -1,17 +1,29 @@
 package com.example.css390_arapp.arlocations;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.opengl.Matrix;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.example.css390_arapp.R;
 import com.example.css390_arapp.lobby;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,16 +44,36 @@ public class AROverlayView extends View {
     private String userCoord = ARActivity.userCoordinates;
     private String usernameCoord = ARActivity.usernameCoord;
     private String username;
+    private ImageView profileIm = ARActivity.profileImg;
     private double userlat;
     private double userlong;
-
-
+    private Bitmap myBitmap;
     public AROverlayView(Context context) {
         super(context);
         this.context = context;
 
+//        String imagePath = "test.jpg";
+//        try {
+//            // get input stream
+//            InputStream ims = context.getAssets().open(imagePath);
+//            Drawable d = Drawable.createFromStream(ims, null);
+//            // set image to ImageView
+//            profileIm.setImageDrawable(d);
+//
+//        }
+//        catch(IOException ex) {
+//            ex.printStackTrace();
+//        }
         //Firebase user info split
         username = usernameCoord;
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference imageRef = storage.getReference().child("images").child(username + ".jpg");
+
+        imageRef.getBytes(1024*1024).addOnSuccessListener(bytes -> {
+            myBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            myBitmap = Bitmap.createScaledBitmap(myBitmap, 120, 120, false);
+        });
+
         String namepass[] = userCoord.split(":");
         double[] doubleArray = Arrays.stream(namepass).mapToDouble(Double::parseDouble).toArray();
         userlat = doubleArray[0];
@@ -96,6 +128,9 @@ public class AROverlayView extends View {
                 float y = (0.5f - cameraCoordinateVector[1]/cameraCoordinateVector[3]) * canvas.getHeight();
 
                 canvas.drawCircle(x, y, radius, paint);
+                if(myBitmap != null && arPoints.get(i).getName() == username){
+                    canvas.drawBitmap(myBitmap, x - 80, y - 30, null);
+                }
                 canvas.drawText(arPoints.get(i).getName(), x - (30 * arPoints.get(i).getName().length() / 2), y - 80, paint);
             }
         }

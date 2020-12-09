@@ -10,7 +10,14 @@ import com.example.css390_arapp.MainActivity
 import com.example.css390_arapp.R
 import com.example.css390_arapp.lobby
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_lobby.*
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.display_location.*
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,9 +63,8 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this, "Login Success!", 2).show()
 
                     //Launch Lobby Activity
-                    val intent = Intent(this, lobby::class.java).apply {
-                        putExtra(AlarmClock.EXTRA_MESSAGE, email)
-                    }
+                    val intent = Intent(this, lobby::class.java)
+                    intent.putExtra(AlarmClock.EXTRA_MESSAGE, email)
                     startActivity(intent)
                 }
             }
