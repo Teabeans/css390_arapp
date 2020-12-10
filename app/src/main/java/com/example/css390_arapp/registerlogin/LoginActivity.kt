@@ -35,15 +35,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        bypassLoginButton.setOnClickListener{
-            val intent = Intent(this, lobby::class.java)
-            startActivity(intent)
-        }
-
-        oldMainLogin_Button.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
     }
 
     //Function for User Login
@@ -72,18 +63,5 @@ class LoginActivity : AppCompatActivity() {
                 //Login Failed, show error toast
                 Toast.makeText( this, "Login Failed: ${it.message}", 10 ).show()
             }
-    }
-
-    fun bypassLogin(view: View) {
-        // For now, just make a toast that says 'Click!'
-        val toaster = Toast.makeText( applicationContext, "Bypassing...", 2 )
-        toaster.show()
-
-        val message = "DEV_USER"
-        val intent = Intent(this, lobby::class.java).apply {
-            putExtra(AlarmClock.EXTRA_MESSAGE, message)
-        }
-        startActivity(intent)
-
     }
 }

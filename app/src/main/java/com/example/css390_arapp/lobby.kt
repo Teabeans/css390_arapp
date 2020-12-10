@@ -155,10 +155,21 @@ class lobby : AppCompatActivity() {
             return
         }
 
-        val username = tempUserNameText2.editableText.toString()
-        var user = LocationCapture.TempLocationUser(username, loc, time) //Create a TempLocationUser object
-        val reference = FirebaseDatabase.getInstance().getReference("users")
+        //val username = tempUserNameText2.editableText.toString()
+        //var user = LocationCapture.TempLocationUser(username, loc, time) //Create a TempLocationUser object
+        //val reference = FirebaseDatabase.getInstance().getReference("users")
 
+        //Update DB
+        val username = tempUserNameText2.editableText.toString()
+        //val uid = statusReport.text.toString()
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$username")
+        ref.child("location").setValue(loc)
+        ref.child("timeUpdated").setValue(time)
+        ref.child("username").setValue(username)
+        Log.d("Location", "Location Updated in DB")
+        Toast.makeText(this, "Location Found and Updated in DB!!", 2).show()
+
+        /*
         reference.child(username).setValue(user).addOnSuccessListener {
             Log.d("Location to database", "Success!")
             Toast.makeText(this, "Location Sent!", 1).show()
@@ -166,6 +177,8 @@ class lobby : AppCompatActivity() {
             Log.d("Location to database", "Failure!")
             Toast.makeText(this, "Unable to send location!", 1).show()
         }
+        */
+
     }
 
 
@@ -185,6 +198,8 @@ class lobby : AppCompatActivity() {
             }
         }
     }
+
+    /*
     // Send a key:value pair to the database
     fun db_send(view: View) {
         val sendKeyField = findViewById<EditText>(R.id.db_send_key)
@@ -230,6 +245,7 @@ class lobby : AppCompatActivity() {
         }
         dbKey.addListenerForSingleValueEvent(menuListener)
     }
+    */
 
     // Function to transition to AR mode
     // Assumes that a coordinate has been captured from the database

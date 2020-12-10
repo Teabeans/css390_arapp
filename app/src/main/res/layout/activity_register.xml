@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#376DCA"
     tools:context=".MainActivity">
 
     <EditText
         android:id="@+id/nameRegister_textview"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginBottom="10dp"
+        android:background="@drawable/rounded_edittext_register_login"
         android:ems="10"
         android:hint="@string/username"
         android:inputType="textPersonName"
@@ -24,6 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
+        android:background="@drawable/rounded_button"
         android:text="register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +57,8 @@
     <EditText
         android:id="@+id/passwordRegister_textview"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:background="@drawable/rounded_edittext_register_login"
         android:ems="10"
         android:hint="@string/password"
         android:inputType="textPersonName"
@@ -67,8 +71,9 @@
     <EditText
         android:id="@+id/emailRegister_textview"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginBottom="10dp"
+        android:background="@drawable/rounded_edittext_register_login"
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textPersonName"
